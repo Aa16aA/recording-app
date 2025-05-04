@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>錄音頁面</title>
+</head>
+<body>
+  <img id="mic" src="mic_stopped.png" alt="mic open.png" style="width:100px;height:100px;cursor:pointer;">
+  <button id="confirm">確認</button>
+
+  <script>
+    let isRecording = false;
+    let mediaRecorder;
+    let audioChunks = [];
+
+    const micImg = document.getElementById('mic');
+    const confirmBtn = document.getElementById('confirm');
+
+    micImg.addEventListener('click', async () => {
+      if (!isRecording) {
+        // 開始錄音
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder = new MediaRecorder(stream);
+        mediaRecorder.start();
+        audioChunks = [];
+
+        mediaRecorder.addEventListener('dataavailable', event => {
+          audioChunks.push(event.data);
+        });
+
+        micImg.src = 'mic_recording.png';
+        isRecording = true;
+      } else {
+        // 停止錄音
+        mediaRecorder.stop();
+        mediaRecorder.addEventListener('stop', () => {
+          const audioBlob = new Blob(audioChunks);
+          const audioUrl = URL.createObjectURL(audioBlob);
+          sessionStorage.setItem('audioUrl', audioUrl);
+        });
+
+        micImg.src = 'mic_stopped.png';
+        isRecording = false;
+      }
+    });
+
+    confirmBtn.addEventListener('click', () => {
+      window.location.href = 'play.html';
+    });
+  </script>
+</body>
+</html>
