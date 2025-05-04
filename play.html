@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>播放錄音</title>
+</head>
+<body>
+  <audio id="player" controls></audio>
+
+  <script>
+    const audioUrl = sessionStorage.getItem('audioUrl');
+    const player = document.getElementById('player');
+    if (audioUrl) {
+      player.src = audioUrl;
+    } else {
+      alert('沒有錄音可播放');
+    }
+  </script>
+</body>
+</html>
